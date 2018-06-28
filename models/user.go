@@ -40,11 +40,7 @@ func (h User) Signup(userPayload forms.UserSignup) (*User, error) {
 		UpdatedAt: time.Now().UnixNano(),
 	}
 
-	hash, err := passlib.Hash("password")
-	if err != nil {
-		// couldn't hash password for some reason
-		return
-	}
+	hash, _ := passlib.Hash("password")
 	fmt.Println(hash)
 
 	item, err := dynamodbattribute.MarshalMap(user)
