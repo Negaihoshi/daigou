@@ -1,30 +1,23 @@
-NAME=daigou
-VERSION=0.0.1
+.PHONY: build clean tool lint help
 
-.PHONY: build
+all: build
+
 build:
-	@go build -o $(NAME)
+	@go build -v .
 
-.PHONY: run
-run: build
-	@./$(NAME) -e development
+tool:
+	go vet ./...; true
+	gofmt -w .
 
-.PHONY: run-prod
-run-prod: build
-	@./$(NAME) -e production
+lint:
+	golint ./...
 
-.PHONY: clean
 clean:
-	@rm -f $(NAME)
+	rm -rf daigou
+	go clean -i .
 
-.PHONY: deps-save
-deps-save:
-	@godep save
-
-.PHONY: deps
-deps:
-	@godep restore
-
-.PHONY: test
-test:
-	@go test -v ./tests/*
+help:
+	@echo "make: compile packages and dependencies"
+	@echo "make tool: run specified go tool"
+	@echo "make lint: golint ./..."
+	@echo "make clean: remove object files and cached files"

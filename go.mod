@@ -1,37 +1,6 @@
-module github.com/negaihoshi/daigou
+module github.com/Negaihoshi/daigou
 
 require (
-	github.com/appleboy/go-spgateway v0.0.0-20180506152632-903cdec13264
-	github.com/aws/aws-sdk-go v1.14.13
-	github.com/fsnotify/fsnotify v1.4.7
-	github.com/gin-gonic/gin v1.1.4
-	github.com/go-ini/ini v1.37.0
-	github.com/go-sql-driver/mysql v1.4.0
-	github.com/golang/protobuf v1.1.0
-	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce
-	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
-	github.com/magiconair/properties v1.8.0
-	github.com/mattn/go-isatty v0.0.3
-	github.com/mitchellh/mapstructure v0.0.0-20180511142126-bb74f1db0675
-	github.com/pelletier/go-toml v1.2.0
-	github.com/rs/xid v1.2.0
-	github.com/spf13/afero v1.1.1
-	github.com/spf13/cast v1.2.0
-	github.com/spf13/jwalterweatherman v0.0.0-20180109140146-7c0cea34c8ec
-	github.com/spf13/pflag v1.0.1
-	github.com/spf13/viper v1.0.2
-	github.com/stretchr/objx v0.1.1
-	github.com/stretchr/testify v1.2.2
-	github.com/teacat/reiner v0.0.0-20180614101704-c2096995aad1
-	github.com/ugorji/go v1.1.1
-	golang.org/x/crypto v0.0.0-20180621125126-a49355c7e3f8
-	golang.org/x/net v0.0.0-20180621144259-afe8f62b1d6b
-	golang.org/x/sys v0.0.0-20180625162522-a200a19cb90b
-	golang.org/x/text v0.3.0
-	gopkg.in/check.v1 v1.0.0-20161208181325-20d25e280405
-	gopkg.in/go-playground/validator.v8 v8.18.2
-	gopkg.in/hlandau/easymetric.v1 v1.0.0
-	gopkg.in/hlandau/measurable.v1 v1.0.1
-	gopkg.in/hlandau/passlib.v1 v1.0.10
-	gopkg.in/yaml.v2 v2.2.1
+	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
+	github.com/negaihoshi/daigou v0.0.0-20180628075057-44a9355113de
 )
