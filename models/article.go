@@ -19,6 +19,7 @@ type Article struct {
 
 func ExistArticleByID(id int) (bool, error) {
 	var article Article
+	// db.AutoMigrate(&Article{})
 	err := db.Select("id").Where("id = ? AND deleted_on = ? ", id, 0).First(&article).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err

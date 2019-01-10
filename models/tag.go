@@ -45,6 +45,7 @@ func GetTags(pageNum int, pageSize int, maps interface{}) ([]Tag, error) {
 		tags []Tag
 	 	err error
 	)
+	db.AutoMigrate(&Tag{})
 
 	if pageSize > 0 && pageNum > 0 {
 		err = db.Where(maps).Find(&tags).Offset(pageNum).Limit(pageSize).Error

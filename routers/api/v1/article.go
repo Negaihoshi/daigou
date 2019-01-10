@@ -87,7 +87,7 @@ func GetArticles(c *gin.Context) {
 		TagID:    tagId,
 		State:    state,
 		PageNum:  util.GetPage(c),
-		PageSize: setting.AppSetting.PageSize,
+		PageSize: setting.AppConfig.App.PageSize,
 	}
 
 	total, err := articleService.Count()

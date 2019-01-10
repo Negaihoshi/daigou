@@ -8,14 +8,14 @@ import (
 )
 
 func getLogFilePath() string {
-	return fmt.Sprintf("%s%s", setting.AppSetting.RuntimeRootPath, setting.AppSetting.LogSavePath)
+	return fmt.Sprintf("%s%s", setting.AppConfig.App.RuntimeRootPath, setting.AppConfig.App.LogSavePath)
 }
 
 func getLogFileName() string {
 	return fmt.Sprintf("%s%s.%s",
-		setting.AppSetting.LogSaveName,
-		time.Now().Format(setting.AppSetting.TimeFormat),
-		setting.AppSetting.LogFileExt,
+		setting.AppConfig.App.LogSaveName,
+		time.Now().Format(setting.AppConfig.App.TimeFormat),
+		setting.AppConfig.App.LogFileExt,
 	)
 }
 

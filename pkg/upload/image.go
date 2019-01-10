@@ -15,7 +15,7 @@ import (
 )
 
 func GetImageFullUrl(name string) string {
-	return setting.AppSetting.PrefixUrl + "/" + GetImagePath() + name
+	return setting.AppConfig.App.PrefixUrl + "/" + GetImagePath() + name
 }
 
 func GetImageName(name string) string {
@@ -27,16 +27,16 @@ func GetImageName(name string) string {
 }
 
 func GetImagePath() string {
-	return setting.AppSetting.ImageSavePath
+	return setting.AppConfig.App.ImageSavePath
 }
 
 func GetImageFullPath() string {
-	return setting.AppSetting.RuntimeRootPath + GetImagePath()
+	return setting.AppConfig.App.RuntimeRootPath + GetImagePath()
 }
 
 func CheckImageExt(fileName string) bool {
 	ext := file.GetExt(fileName)
-	for _, allowExt := range setting.AppSetting.ImageAllowExts {
+	for _, allowExt := range setting.AppConfig.App.ImageAllowExts {
 		if strings.ToUpper(allowExt) == strings.ToUpper(ext) {
 			return true
 		}
@@ -53,7 +53,7 @@ func CheckImageSize(f multipart.File) bool {
 		return false
 	}
 
-	return size <= setting.AppSetting.ImageMaxSize
+	return size <= setting.AppConfig.App.ImageMaxSize
 }
 
 func CheckImage(src string) error {

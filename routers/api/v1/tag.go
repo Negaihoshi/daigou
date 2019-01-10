@@ -34,7 +34,7 @@ func GetTags(c *gin.Context) {
 		Name:     name,
 		State:    state,
 		PageNum:  util.GetPage(c),
-		PageSize: setting.AppSetting.PageSize,
+		PageSize: setting.AppConfig.App.PageSize,
 	}
 	tags, err := tagService.GetAll()
 	if err != nil {

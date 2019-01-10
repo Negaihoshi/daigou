@@ -7,8 +7,9 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 
-	"github.com/negaihoshi/daigou/pkg/setting"
 	"time"
+
+	"github.com/negaihoshi/daigou/pkg/setting"
 )
 
 var db *gorm.DB
@@ -22,18 +23,19 @@ type Model struct {
 
 func Setup() {
 	var err error
-	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		setting.DatabaseSetting.User,
-		setting.DatabaseSetting.Password,
-		setting.DatabaseSetting.Host,
-		setting.DatabaseSetting.Name))
+
+	db, err = gorm.Open(setting.AppConfig.Database.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		setting.AppConfig.Database.User,
+		setting.AppConfig.Database.Password,
+		setting.AppConfig.Database.Host,
+		setting.AppConfig.Database.Name))
 
 	if err != nil {
 		log.Println(err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return setting.DatabaseSetting.TablePrefix + defaultTableName
+		return setting.AppConfig.Database.TablePrefix + defaultTableName
 	}
 
 	db.SingularTable(true)

@@ -1,10 +1,13 @@
 package setting
 
 import (
+	"fmt"
 	"log"
+	"path/filepath"
+	"sync"
 	"time"
 
-	"github.com/go-ini/ini"
+	"github.com/BurntSushi/toml"
 )
 
 type App struct {
@@ -26,9 +29,13 @@ type App struct {
 	LogSaveName string
 	LogFileExt  string
 	TimeFormat  string
-}
 
-var AppSetting = &App{}
+	Argon2Memory      uint32
+	Argon2Iterations  uint32
+	Argon2Parallelism uint8
+	Argon2SaltLength  uint32
+	Argon2KeyLength   uint32
+}
 
 type Server struct {
 	RunMode      string
@@ -36,8 +43,6 @@ type Server struct {
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 }
-
-var ServerSetting = &Server{}
 
 type Database struct {
 	Type        string
@@ -48,8 +53,6 @@ type Database struct {
 	TablePrefix string
 }
 
-var DatabaseSetting = &Database{}
-
 type Redis struct {
 	Host        string
 	Password    string
@@ -58,31 +61,56 @@ type Redis struct {
 	IdleTimeout time.Duration
 }
 
-var RedisSetting = &Redis{}
-
-var cfg *ini.File
-
-func Setup() {
-	var err error
-	cfg, err = ini.Load("conf/app.ini")
-	if err != nil {
-		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
-	}
-
-	mapTo("app", AppSetting)
-	mapTo("server", ServerSetting)
-	mapTo("database", DatabaseSetting)
-	mapTo("redis", RedisSetting)
-
-	AppSetting.ImageMaxSize = AppSetting.ImageMaxSize * 1024 * 1024
-	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
-	ServerSetting.WriteTimeout = ServerSetting.ReadTimeout * time.Second
-	RedisSetting.IdleTimeout = RedisSetting.IdleTimeout * time.Second
+type Social struct {
+	FacebookClientKey         string
+	FacebookClientSecret      string
+	FacebookClientCallbackURL string
+	GoogleClientKey           string
+	GoogleClientSecret        string
+	GoogleClientCallbackURL   string
 }
 
-func mapTo(section string, v interface{}) {
-	err := cfg.Section(section).MapTo(v)
-	if err != nil {
-		log.Fatalf("Cfg.MapTo RedisSetting err: %v", err)
+type config struct {
+	App      App
+	Server   Server
+	Database Database
+	Redis    Redis
+	Social   Social
+}
+
+var (
+	AppConfig config
+	once      sync.Once
+)
+
+func Setup() {
+	var cpath string = "conf/env.toml"
+	if _, err := toml.DecodeFile(cpath, &AppConfig); err != nil {
+		log.Fatal(err)
 	}
+
+	AppConfig.App.ImageMaxSize = AppConfig.App.ImageMaxSize * 1024 * 1024
+	AppConfig.Server.ReadTimeout = AppConfig.Server.ReadTimeout * time.Second
+	AppConfig.Server.WriteTimeout = AppConfig.Server.ReadTimeout * time.Second
+	AppConfig.Redis.IdleTimeout = AppConfig.Redis.IdleTimeout * time.Second
+}
+
+func Config() {
+	once.Do(func() {
+		filePath, err := filepath.Abs("./conf/env.toml")
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("parse toml file once. filePath: %s\n", filePath)
+
+		if _, err := toml.DecodeFile(filePath, &AppConfig); err != nil {
+			log.Fatal(err)
+		}
+
+		AppConfig.App.ImageMaxSize = AppConfig.App.ImageMaxSize * 1024 * 1024
+		AppConfig.Server.ReadTimeout = AppConfig.Server.ReadTimeout * time.Second
+		AppConfig.Server.WriteTimeout = AppConfig.Server.ReadTimeout * time.Second
+		AppConfig.Redis.IdleTimeout = AppConfig.Redis.IdleTimeout * time.Second
+	})
+	// return AppConfig
 }

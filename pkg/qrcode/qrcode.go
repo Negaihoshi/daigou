@@ -36,15 +36,15 @@ func NewQrCode(url string, width, height int, level qr.ErrorCorrectionLevel, mod
 }
 
 func GetQrCodePath() string {
-	return setting.AppSetting.QrCodeSavePath
+	return setting.AppConfig.App.QrCodeSavePath
 }
 
 func GetQrCodeFullPath() string {
-	return setting.AppSetting.RuntimeRootPath + setting.AppSetting.QrCodeSavePath
+	return setting.AppConfig.App.RuntimeRootPath + setting.AppConfig.App.QrCodeSavePath
 }
 
 func GetQrCodeFullUrl(name string) string {
-	return setting.AppSetting.PrefixUrl + "/" + GetQrCodePath() + name
+	return setting.AppConfig.App.PrefixUrl + "/" + GetQrCodePath() + name
 }
 
 func GetQrCodeFileName(value string) string {

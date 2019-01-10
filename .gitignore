@@ -13,3 +13,6 @@
 
 vendor/
 .idea/
+conf/env.toml
+daigou
+runtime/logs
