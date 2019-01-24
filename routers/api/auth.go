@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/astaxie/beego/validation"
+	// "github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/sessions"
 
 	"github.com/negaihoshi/daigou/pkg/app"
 	"github.com/negaihoshi/daigou/pkg/e"
 	"github.com/negaihoshi/daigou/pkg/util"
-	"github.com/negaihoshi/daigou/service/auth_service"
+	// "github.com/negaihoshi/daigou/service/auth_service"
 	"github.com/negaihoshi/daigou/service/user_service"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
@@ -26,30 +26,43 @@ import (
 type auth struct {
 	Username string `valid:"Required; MaxSize(50)"`
 	Password string `valid:"Required; MaxSize(50)"`
+	Email string `valid:"Required; MaxSize(255)"`
 }
 
+// type User struct {
+// 	Username string `valid:"Required; MaxSize(50)"`
+// 	Password string `valid:"Required; MaxSize(255)"`
+// 	Email string `valid:"Required; MaxSize(255)"`
+// }
 type User struct {
-	Username string `valid:"Required; MaxSize(50)"`
+	*user_service.User
 }
 
 func GetAuth(c *gin.Context) {
 	appG := app.Gin{C: c}
-	valid := validation.Validation{}
+	// valid := validation.Validation{}
 
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	// username := c.PostForm("username")
+	// password := c.PostForm("password")
 
-	a := auth{Username: username, Password: password}
-	ok, _ := valid.Valid(&a)
+	// a := auth{Username: username, Password: password}
+	// ok, _ := valid.Valid(&a)
 
-	if !ok {
-		app.MarkErrors(valid.Errors)
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+	// if !ok {
+	// 	app.MarkErrors(valid.Errors)
+	// 	appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+	// 	return
+	// }
+
+	var form auth
+
+	if err := c.ShouldBindJSON(&form); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	authService := auth_service.Auth{Username: username, Password: password}
-	isExist, err := authService.Check()
+	userService := user_service.User{Username: form.Username, Password: form.Password}
+	isExist, err := userService.Check()
 	if err != nil {
 		appG.Response(http.StatusOK, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -69,6 +82,29 @@ func GetAuth(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
 		"token": token,
 	})
+}
+
+func PostAuth(c *gin.Context) {
+	var form auth
+
+	if err := c.ShouldBindJSON(&form); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userService := user_service.User{
+		Username: form.Username,
+		Password: form.Password,
+		Email: form.Email,
+	}
+
+	if err := userService.Add(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"username": form.Username, "password": form.Password})
+	return
 }
 
 func GetGoogle(c *gin.Context) {

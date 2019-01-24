@@ -11,7 +11,12 @@ type User struct {
 	ID       string `gorm:"primary_key" json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Email    string `json:"email"`
 }
+
+// type User struct {
+// 	*models.User
+// }
 
 type ThirdPartyProvider struct {
 	ID                string
@@ -23,11 +28,10 @@ type ThirdPartyProvider struct {
 	AccessTokenSecret string
 
 	UserID string
-	User   User
+	User   models.User
 }
 
 func (data *User) Add() error {
-
 	encodedHash, err := util.GenerateFromPassword(data.Password)
 	if err != nil {
 		log.Fatal(err)
@@ -36,6 +40,7 @@ func (data *User) Add() error {
 	user := map[string]interface{}{
 		"username": data.Username,
 		"password": encodedHash,
+		"email":    data.Email,
 	}
 
 	if err := models.CreateUser(user); err != nil {
@@ -68,4 +73,12 @@ func (data *ThirdPartyProvider) AddProvider() error {
 	}
 
 	return nil
+}
+
+func (user *User) Check() (bool, error) {
+	return models.CheckUser(user.Username, user.Password)
+}
+
+func (user *User) Get() (models.User, error) {
+	return models.GetUser(user.ID)
 }
